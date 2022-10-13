@@ -1,0 +1,184 @@
+{% extends base_template %}
+{% block title %} Aerofoil - Backfill {% endblock %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for_asset('switch.css') }}">
+<style type="text/css">
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
+}
+</style>
+
+{% endblock %}
+
+{% block body %}
+{{ super() }}   
+<div class="container">
+	<div class="panel panel-primary show">
+		<div class="panel-heading">
+			<div class="panel-title">Reset/Clear DAG Excution History</div>
+		</div>
+		<div class="panel-body">
+			<div class="table-responsive table-borderless">
+				<form id="form" autocomplete="on" > 
+					<table class="table table-borderless">
+						<tbody>
+							<tr>
+								<td>
+									<div class="row form-inline">
+										<div class="form-group">
+											<label>Dag Name: 
+												<input class="form-control" type="text" name="dag_name" id="dag_name" 
+													   placeholder=" Enter exact dag name" size="100" required="true"
+													   oninvalid="this.setCustomValidity('Please Enter Dag Name')"/>
+											</label>
+										</div>
+									</div> 
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row form-inline">
+										<div class="form-group">
+											<label>Reset Reason: </label>
+											<input class="form-control" type="text" name="reset_reason" id="reset_reason" 
+											       placeholder="Reset Reason" size="90"
+											       oninvalid="this.setCustomValidity('Please Enter a Reset Reason')"/>
+										</div>
+									</div>  
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<input id="submit" type="submit" class="btn btn-primary" value="Submit" />
+										<input type="reset" id="reset-btn" class="btn btn-light" value="Clear" />
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div id='backfill_status'> </div> 
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="panel panel-primary show">
+		<div class="panel-heading">
+			<div class="panel-title">Reset History </div>
+		</div>
+		<div class="panel-body">
+			<div class="table-responsive table-borderless" id='history'>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block tail %}
+{{ super() }} 
+<script type="text/javascript">
+	const disable_form = function () {
+			$("#form :input").prop("disabled", true);
+	};
+
+	const enable_form = function () {
+			$("#form :input").prop("disabled", false);
+	};
+
+	String.prototype.format = function () {
+  		var i = 0, args = arguments;
+	  	return this.replace(/{}/g, function () {
+	    return typeof args[i] != 'undefined' ? args[i++] : '';
+	  });
+	};
+
+	function backfill_done(){
+		const msg = '<div class="alert alert-success alert-dismissible">'+
+		            'Reset DAG succesful. <strong>&#128077;</strong> </div>'
+		$('#backfill_status').html(msg)
+	}
+
+	function backfill_wip(){
+		const msg = '<span class="alert spinner-border text-primary" style="height: 20px; width:20px;"</span>' +
+		            '<img src="/static/loading.gif" width=25/>' +
+		            '&nbsp; &nbsp; </strong> Resetting DAG, Please wait.. </div>'
+		$('#backfill_status').html(msg)
+	}
+
+	function backfill_error(error_msg){
+		const msg = `<div class="alert alert-danger alert-dismissible show"> ${error_msg} </div>`;  
+		$('#backfill_status').html(msg)
+	}
+
+	function clear_msg(){
+		$('#backfill_status').html('')
+	}	
+
+
+	$(document).on("submit", "#form", function (event) {
+			event.preventDefault();
+			disable_form();
+			backfill_wip();
+
+			const dag_name = $("#dag_name").val();
+			const reset_reason = $("#reset_reason").val();
+
+			const query_string = `dag_name=${dag_name}&reset_reason=${reset_reason}`
+			reset_url = `{{ url_base }}/doit?${query_string}`;
+
+			$.ajax({url: reset_url,data:query_string, type: 'POST' }).done(function(data){
+				enable_form();
+				$.get(`{{ url_base }}/history`, function(data){
+					load_history(data);
+				});
+				backfill_done();
+			});
+	});
+
+	function load_history(data){
+		if(data == null){
+			$('#history').html('Can not load history, something went wrong!');
+			return;
+		}
+		let data_rows = data;
+		let rows = [];
+		let header = "<thead> <tr><th width='38%'><b>DAG Name </b> </th>" + 
+					 "<th> <b>Reset By </b> </th>" +
+					 "<th> <b>Reset Date </b> </th>" +
+					 "<th> <b>Reset Reason </b> </th> </tr></thead>" ;
+
+		for(const data_row of data_rows){
+			let row = `<tr><td><a href='/tree?dag_id?${data_row.dag_id}'>${data_row.dag_id}</a> </td>` + 
+			          `<td>${data_row.reset_by}</td>` + 
+			          `<td>${data_row.reset_date}</td>` + 
+			          `<td>${data_row.reset_reason}</td></tr>` 
+			rows.push(row)
+		}
+
+		let data_html = header + rows.join('')
+		$('#history').html(`<table class='table table-bordered' width='100%'>${data_html}</table>`);
+	}
+
+	$('#reset-btn').click(function(){
+		clear_msg();
+	})
+
+	$(document).ready(function(){
+		$('#history').html('Loading history...');
+		$.get(`{{ url_base }}/history`, function(data){
+			load_history(data);
+		});
+	});
+
+
+</script>
+{% endblock %}
