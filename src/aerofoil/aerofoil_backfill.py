@@ -13,8 +13,8 @@ from aerofoil.sensors.backfill_sensor import BackfillSensor
 
 
 with DAG('__aerofoil_backfill__', description='Aerofloil DAG to run Backfill jobs',
-          schedule_interval='0 12 * * *',
-          start_date=datetime(2017, 3, 20), catchup=False) as dag:
+          schedule_interval='* * * * *',
+          start_date=datetime(2020, 3, 20), catchup=False) as dag:
 
     backfill_sensor = BackfillSensor(task_id='backfill_sensor_task')
     BACKFILL_ID_KEY = "BACKFILL_ID"
