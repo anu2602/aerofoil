@@ -33,13 +33,13 @@ When the user submits a backfill, it creates an entry in the `aerofoil_backfill`
 
 ## Screenshots:
 ##### Aerofoil Menu
-![img](images/menu.png)
+![img](screenshots/menu.png)
 ##### Backfill Screen
-![img](images/backfill.png)
+![img](screenshots/backfill.png)
 ##### Reset DAG Menu
-![img](images/reset.png)
+![img](screenshots/reset.png)
 ##### Fake Success Menu
-![img](images/fake_success.png)
+![img](screenshots/fake_success.png)
 
 ## Contribute:
 If you find something missing and would like to contrinute, feel free to raise a pull request. If you find a bug and would like me to fix it, please feel free to raise an issue. 
