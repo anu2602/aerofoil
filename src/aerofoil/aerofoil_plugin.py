@@ -23,55 +23,53 @@ view_reset_dag = ResetDagView()
 view_restart = RestartView()
 view_version = VersionView()
 
-
-base_folder = os.path.dirname(aerofoil.__file__)
-template_folder = os.path.join(base_folder, 'aerofoil', 'templates')
 aerofoil_bp = Blueprint(
-	'aerofoil_plugin', __name__,
-	 template_folder='templates',
-	 static_folder='aerofoil/static',
-	 static_url_path='/static/aerofoil'
+    "aerofoil_plugin",
+    __name__,
+    template_folder="templates",
+    static_folder="static",
+    static_url_path="/static/aerofoil",
 )
 
 backfill_pkg = {
-	'name' : 'Backfill',
-	'category' : AEROFOIL_LABEL,
-	'view': view_backfill
+    "name": "Backfill",
+    "category": AEROFOIL_LABEL,
+    "view": view_backfill
 }
 
 fs_pkg = {
-	'name' : 'Fake Success',
-	'category' : AEROFOIL_LABEL,
-	'view': view_fs
+    "name": "Fake Success",
+    "category": AEROFOIL_LABEL,
+    "view": view_fs
 }
 
 reset_pkg = {
-	'name' : 'Reset Dag',
-	'category' : AEROFOIL_LABEL,
-	'view': view_reset_dag
+    "name": "Reset Dag",
+    "category": AEROFOIL_LABEL,
+    "view": view_reset_dag
 }
 
 restart_pkg = {
-	'name' : 'Restart Services',
-	'category' : AEROFOIL_LABEL,
-	'view': view_restart
+    "name": "Restart Services",
+    "category": AEROFOIL_LABEL,
+    "view": view_restart,
 }
 
 mydags_pkg = {
-	'name' : 'MyDags',
-	'category' : AEROFOIL_LABEL,
-	'view': view_mydags
+    "name": "MyDags",
+    "category": AEROFOIL_LABEL,
+    "view": view_mydags
 }
 
 versions_pkg = {
-	'name' : 'Dags Version',
-	'category' : AEROFOIL_LABEL,
-	'view': view_version
+    "name": "Dags Version",
+    "category": AEROFOIL_LABEL,
+    "view": view_version,
 }
 
 
 class AerofoilPlugin(AirflowPlugin):
-	name = AEROFOIL_LABEL
-	appbuilder_views = [backfill_pkg, fs_pkg, reset_pkg, mydags_pkg ]
-	appbuilder_menu_items = []
-	flask_blueprints = [aerofoil_bp]
+    name = AEROFOIL_LABEL
+    appbuilder_views = [backfill_pkg, fs_pkg, reset_pkg, mydags_pkg]
+    appbuilder_menu_items = []
+    flask_blueprints = [aerofoil_bp]

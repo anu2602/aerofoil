@@ -27,25 +27,33 @@ class BackfillBaseView(BaseView):
         task_regex = request.args.get("task_regex")
 
         start_date = request.args.get("start_date")
-        end_date = request.args.get("end_date")     
+        end_date = request.args.get("end_date")
 
-        clear_previous = request.args.get("clear_previous", default=False, type=lambda v: v.lower() == 'true')
-        rerun_failed = request.args.get("rerun_failed", default=False, type=lambda v: v.lower() == 'true')
-        run_backwards = request.args.get("run_backwards", default=False, type=lambda v: v.lower() == 'true')
-        mark_success = request.args.get("mark_success", default=False, type=lambda v: v.lower() == 'true')
+        clear_previous = request.args.get(
+            "clear_previous", default=False, type=lambda v: v.lower() == "true"
+        )
+        rerun_failed = request.args.get(
+            "rerun_failed", default=False, type=lambda v: v.lower() == "true"
+        )
+        run_backwards = request.args.get(
+            "run_backwards", default=False, type=lambda v: v.lower() == "true"
+        )
+        mark_success = request.args.get(
+            "mark_success", default=False, type=lambda v: v.lower() == "true"
+        )
 
         backfill = Backfill(
-            dag_id = dag_name,
-            task_regex = task_regex,
-            status = "queued",
-            start_date = start_date,
-            end_date = end_date,
-            clear_previous = clear_previous,
-            rerun_failed = rerun_failed,
-            run_backwards = run_backwards,
-            mark_success = mark_success,
-            started_by = get_current_user(),
-            started_at = datetime.now(),
+            dag_id=dag_name,
+            task_regex=task_regex,
+            status="queued",
+            start_date=start_date,
+            end_date=end_date,
+            clear_previous=clear_previous,
+            rerun_failed=rerun_failed,
+            run_backwards=run_backwards,
+            mark_success=mark_success,
+            started_by=get_current_user(),
+            started_at=datetime.now(),
         )
 
         session.add(backfill)
@@ -54,11 +62,12 @@ class BackfillBaseView(BaseView):
 
         return self.history(session)
 
-
     @expose("/history")
     @provide_session
     def history(self, session=None):
-        mark_success = request.args.get("mark_success", default=False, type=lambda v: v.lower() == 'true')
+        mark_success = request.args.get(
+            "mark_success", default=False, type=lambda v: v.lower() == "true"
+        )
         results = (
             session.query(Backfill)
             .filter_by(mark_success=mark_success)
@@ -90,10 +99,13 @@ class BackfillView(BackfillBaseView):
     def base(self):
         return self.render_template("aerofoil/backfill.html", url_base=self.route_base)
 
+
 class FakeSuccessView(BackfillBaseView):
     default_view = "base"
     route_base = f"{AEROFOIL_ROUTE_BASE}/fake-success"
-    
+
     @expose("/")
     def base(self):
-        return self.render_template("aerofoil/fake_success.html", url_base=self.route_base)
+        return self.render_template(
+            "aerofoil/fake_success.html", url_base=self.route_base
+        )
