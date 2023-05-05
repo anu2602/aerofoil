@@ -243,7 +243,7 @@
 					 "<th> <b>Log </b> </th> </tr></thead>" ;
 
 		for(const data_row of data_rows){
-			let row = `<tr><td><a href='/tree?dag_id?${data_row.dag_id}'>${data_row.dag_id}</a> </td>` + 
+			let row = `<tr><td><a href='/tree?dag_id=${data_row.dag_id}'>${data_row.dag_id}</a> </td>` + 
 			          `<td>${data_row.start_date}</td>` + 
 			          `<td>${data_row.end_date}</td>` + 
 			          `<td>${data_row.started_by}</td>` + 

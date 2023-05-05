@@ -14,6 +14,7 @@ setup(
     long_description=read('README.md'),
     author='Anuradha Chowdhary',
     author_email='mail@achowdhary.com',
+    include_package_data=True,
     entry_points={
         'apache_airflow_provider': [
             'provider_info=aerofoil.__init__:get_provider_info'

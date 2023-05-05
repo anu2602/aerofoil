@@ -22,11 +22,10 @@ Context aware BashOperator, that can take a context and pass it to callback e.g.
 - Requires a non-sqlite database in the backend.
 
 ### Install Instructions:
-- Clone this repo (the plugin is not yet available in pypi)
+- pip install apache-airflow-providers-aerofoil
 - Add rquired tables to Airflow Metadata DB by executing src/aerofoil/models.sql
 - Deploy DAG file in the src/aerofoil/aerofoil_backfill.py DAGs to  your Airflow (usually by putting the DAG in  Airflow's DAGs folder.
-- Make sure the *__aerofoil_backfill__* 
-- DAG is enabled.
+- Make sure the *__aerofoil_backfill__*  DAG is enabled.
 
 ## Backfilll Design:
 When the user submits a backfill, it creates an entry in the `aerofoil_backfill` backfill table. *__aerofoil_backfill__*  DAG is scheduled to run every minute (which can be changed, by modifying the DAG). The Sesor in the DAG, picks up the entries in the DB and create dynamic task for each entry. The Backfill job itself runs as a Bash command in the executor. This provides a flexible and executor agnostic design.  

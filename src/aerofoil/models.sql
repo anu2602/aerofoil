@@ -13,14 +13,14 @@ CREATE TABLE aerofoil_backfill (
 	ti_dag_id varchar(250),
 	ti_task_id varchar(250),
 	ti_run_id varchar(250),
-	ti_map_id Integer,
+	ti_map_index Integer,
 	cmd varchar(500),
 
 	started_at timestamp,
 	started_by varchar(64),
 	terminated_at timestamp,
 	terminated_by varchar(64)
-)
+);
 
 CREATE TABLE aerofoil_reset_dag(
 	id serial primary key,
@@ -29,4 +29,4 @@ CREATE TABLE aerofoil_reset_dag(
 	reset_by varchar(10) not null,
 	reset_date date not null,
 	reset_reason varchar(200)
-)
+);
