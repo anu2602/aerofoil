@@ -52,8 +52,8 @@ class Backfill(Base):
             cmd += "--reset-dagruns "
         if self.rerun_failed:
             cmd += "--rerun-failed-tasks "
-        if self.clear_previous:
-            cmd += "--run-backwards"
+        if self.run_backwards:
+            cmd += "--run-backwards "
 
         if self.task_regex:
             cmd += "-t {self.task_regex}"
